@@ -46,3 +46,15 @@ function custom_remove_default_post_type_new_content_menu() {
   $wp_admin_bar->remove_menu('new-post');
 }
 add_action( 'wp_before_admin_bar_render', 'custom_remove_default_post_type_new_content_menu' );
+
+/**
+ * If someone clicks on the "New" in the admin bar, default them to the page type.
+ */
+function custom_redirect_post_editor_to_page_editor() {
+  if(empty($_SERVER['REQUEST_URI'])) return;
+  if('/wp-admin/post-new.php' !== $_SERVER['REQUEST_URI']) return;
+  if(!empty($_GET['post_type'])) return;
+  wp_redirect(add_query_arg(['post_type' => 'page']));
+  exit;
+}
+add_action( 'admin_init', 'custom_redirect_post_editor_to_page_editor' );
